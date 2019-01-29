@@ -1,0 +1,55 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "NetworkInterfaceName": {
+            "type": "string"
+        },
+        "Location": {
+        "type": "string",
+        "defaultValue": "[resourceGroup().location]"
+		},
+        "SubnetName": {
+            "type": "string"
+        },
+        "PrivateIPAllocationMethod": {
+            "type": "string"
+        },
+        "NetworkSecurityGroupName": {
+            "type": "string"
+        },
+		"VirtualNetworkName": {
+            "type": "string"
+        }
+    },
+	"variables": 
+	{
+       "NSGID": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('NetworkSecurityGroupName'))]",
+	   "SubnetID":"[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VirtualNetworkName'), parameters('SubnetName'))]"
+    },
+    "resources": [
+        {
+            "name": "[parameters('NetworkInterfaceName')]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2018-04-01",
+            "location": "[parameters('Location')]",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIpAddressVersion": "IPv4",
+                            "privateIPAllocationMethod": "[parameters('PrivateIPAllocationMethod')]",
+                            "subnet": {
+                                "id": "[variables('SubnetID')]"
+                            }
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[variables('NSGID')]"
+                },
+            }
+        }
+    ]
+}

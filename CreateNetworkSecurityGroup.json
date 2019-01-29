@@ -1,0 +1,53 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.1",
+    "parameters": {
+		"NSGName": {
+            "type": "string"
+	     },
+		 "Location": {
+        "type": "string",
+        "defaultValue": "[resourceGroup().location]"
+		}
+	},
+	"resources": [
+	{
+      "name": "[parameters('NSGName')]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2017-09-01",
+      "location": "[parameters('Location')]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "AllowHTTPRequests",
+            "properties": {
+              "description": "Allow http traffic to VM",
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "direction": "Inbound",
+              "access": "Allow",
+              "priority": 100,
+              "protocol": "TCP",
+              "destinationPortRange": "443" ,
+			  "destinationAddressPrefix": "*"	  
+            }
+		   },
+           {
+			 "name": "AllowRDPRequests",
+			 "properties": {
+              "description": "Allow RDP requests to VM",
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "direction": "Inbound",
+              "access": "Allow",
+              "priority": 101,
+              "protocol": "UDP",
+              "destinationPortRange": "3389" ,
+			  "destinationAddressPrefix": "*"
+			  }
+		    }
+        ]
+	  }	
+	}
+    ]	
+}

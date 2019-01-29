@@ -1,0 +1,71 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.1",
+    "parameters": {
+		"VirtualNetworkName": {
+            "type": "string"
+        },
+		"VnetAddressPrefix": {
+		"type": "string"
+		},
+		"Subnet1Name": {
+		"type": "string"
+		},
+		"Subnet1Prefix": {
+		"type":"string"
+		},
+		"Subnet2Name": {
+		"type":"string"
+		},
+		"Subnet2Prefix": {
+		"type":"string"
+		},
+		"Location": {
+        "type": "string",
+        "defaultValue": "[resourceGroup().location]"
+		}
+	},
+    "resources": [
+    {
+      "apiVersion": "2018-06-01",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[parameters('VirtualNetworkName')]",
+      "location": "[parameters('Location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('VnetAddressPrefix')]"
+          ]
+        }
+      },
+      "resources": [
+        {
+          "apiVersion": "2018-06-01",
+          "type": "subnets",
+          "location": "[parameters('Location')]",
+          "name": "[parameters('Subnet1Name')]",
+          "dependsOn": [
+            "[parameters('VirtualNetworkName')]"
+          ],
+          "properties": {
+            "addressPrefix": "[parameters('Subnet1Prefix')]"
+          }
+        },
+        {
+          "apiVersion": "2018-06-01",
+          "type": "subnets",
+          "location": "[parameters('Location')]",
+          "name": "[parameters('Subnet2Name')]",
+          "dependsOn": [
+            "[parameters('VirtualNetworkName')]"
+          ],
+          "properties": {
+            "addressPrefix": "[parameters('Subnet2Prefix')]"
+          }
+        }
+      ]
+    }
+  ]
+}
+   
+   
